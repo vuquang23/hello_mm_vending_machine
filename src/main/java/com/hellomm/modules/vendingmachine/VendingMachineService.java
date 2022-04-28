@@ -9,7 +9,6 @@ import java.util.HashMap;
 
 import com.hellomm.common.enums.CustomerActionEnum;
 import com.hellomm.modules.iohelper.IOHelperService;
-import com.hellomm.modules.statemachine.StateMachineService;
 import com.hellomm.modules.vendingmachine.components.CustomerCart;
 import com.hellomm.modules.vendingmachine.components.Store;
 
@@ -24,7 +23,7 @@ public class VendingMachineService {
 
     private StateEnum machineState;
 
-    public VendingMachineService(IOHelperService ioHelperService, StateMachineService stateMachineService) {
+    public VendingMachineService(IOHelperService ioHelperService) {
         this.ioHelperService = ioHelperService;
 
         this.store = new Store();
@@ -34,8 +33,6 @@ public class VendingMachineService {
 
     public void start() {
         ioHelperService.clrscr();
-        ioHelperService.log("Vending machine has started!\n");
-
         for (;;) {
             try {
                 switch (this.machineState) {
@@ -78,58 +75,23 @@ public class VendingMachineService {
 
         try {
             switch (action) {
-                case INSERT_CASH: {
-                    int denomination = this.ioHelperService.customerInsertCash();
-                    if (denomination == -1) {
-                        this.setState(StateEnum.CUSTOMER_WAIT);
-                        return;
-                    }
-                    this.store.customerInsertCash(denomination);
-                    this.customerCart.insertCash(denomination);
+                case INSERT_CASH:
+                    this.customerInsertCash();
                     break;
-                }
-
-                case SELECT_ITEM: {
-                    String product = this.ioHelperService.customerSelectProduct();
-                    if (product.equals("-1")) {
-                        this.setState(StateEnum.CUSTOMER_WAIT);
-                        return;
-                    }
-                    this.customerCart.selectProduct(this.store, product);
+                case SELECT_ITEM:
+                    this.customerSelectItem();
                     break;
-                }
-
-                case UNSELECT_ITEM: {
-                    String product = this.ioHelperService.customerSelectProduct();
-                    if (product.equals("-1")) {
-                        this.setState(StateEnum.CUSTOMER_WAIT);
-                        return;
-                    }
-                    this.customerCart.unselectProduct(product);
+                case UNSELECT_ITEM:
+                    this.customerUnselectItem();
                     break;
-                }
-
-                case TRANSACT: {
-                    ImmutablePair<Boolean, ArrayList<ImmutablePair<Integer, Integer>>> changeCalc = this
-                            .changeCalculate();
-                    if (!changeCalc.getLeft()) {
-                        throw new CannotPayBackException();
-                    }
-                    this.store.returnCashForCustomer(changeCalc.getRight());
-                    this.ioHelperService.returnCashAndProductsForCustomer(changeCalc.getRight(), this.customerCart);
-                    this.destroyCustomerCart();
+                case TRANSACT:
+                    this.customerMakeTx();
                     break;
-                }
-
-                case CANCEL: {
-                    this.ioHelperService.customerCancelTx(customerCart);
-                    this.destroyCustomerCart();
+                case CANCEL:
+                    this.customerCancelTx();
                     break;
-                }
-
                 default:
                     throw new Exception("Invalid action.");
-
             }
 
             this.setState(nxtState);
@@ -138,6 +100,47 @@ public class VendingMachineService {
             this.ioHelperService.error(e);
             Thread.sleep(2500);
         }
+    }
+
+    private void customerInsertCash() throws Exception {
+        int denomination = this.ioHelperService.customerInsertCash();
+        if (denomination == -1) {
+            return;
+        }
+        this.store.customerInsertCash(denomination);
+        this.customerCart.insertCash(denomination);
+    }
+
+    private void customerSelectItem() throws Exception {
+        String product = this.ioHelperService.customerSelectProduct();
+        if (product.equals("-1")) {
+            return;
+        }
+        this.customerCart.selectProduct(this.store, product);
+    }
+
+    private void customerUnselectItem() throws Exception {
+        String product = this.ioHelperService.customerSelectProduct();
+        if (product.equals("-1")) {
+            return;
+        }
+        this.customerCart.unselectProduct(product);
+    }
+
+    private void customerMakeTx() throws Exception {
+        ImmutablePair<Boolean, ArrayList<ImmutablePair<Integer, Integer>>> changeCalc = this
+                .changeCalculate();
+        if (!changeCalc.getLeft()) {
+            throw new CannotPayBackException();
+        }
+        this.store.returnCashForCustomer(changeCalc.getRight());
+        this.ioHelperService.returnCashAndProductsForCustomer(changeCalc.getRight(), this.customerCart);
+        this.destroyCustomerCart();
+    }
+
+    private void customerCancelTx() {
+        this.ioHelperService.customerCancelTx(customerCart);
+        this.destroyCustomerCart();
     }
 
     private void createCartIfNewTransaction() {
@@ -159,13 +162,11 @@ public class VendingMachineService {
         if (change < 0) {
             throw new NotEnoughPaidException();
         }
-
         // 1m vnd.
         int MAX = 1005;
 
         boolean[] dp = new boolean[MAX];
         dp[0] = true;
-
         int[] trace = new int[MAX];
 
         ImmutablePair<int[], Integer> cashFlatten = this.store.cashFlatten();

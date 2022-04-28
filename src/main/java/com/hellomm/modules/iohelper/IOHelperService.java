@@ -50,6 +50,7 @@ public class IOHelperService {
         this.log("Options:");
         this.log("1. Admin role");
         this.log("2. Customer role");
+        this.log("3. Stop Machine");
     }
 
     public StateEnum readyStateSelect() {
@@ -68,6 +69,10 @@ public class IOHelperService {
                     return StateEnum.ADMIN_WAIT;
                 case 2:
                     return StateEnum.CUSTOMER_WAIT;
+                case 3:
+                    this.clrscr();
+                    this.log("Bye!\n");
+                    System.exit(0);
                 default:
                     this.error("Invalid input. Try again!");
             }
