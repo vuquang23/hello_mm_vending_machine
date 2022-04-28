@@ -1,5 +1,6 @@
 package com.hellomm.modules.iohelper;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -183,6 +184,24 @@ public class IOHelperService {
         this.clrscr();
         this.log("You receive back:");
         this.log(insertCashHistoryInfo);
+        this.log("\nPress enter key to continue");
+        this.scanner.nextLine();
+    }
+
+    public void returnCashAndProductsForCustomer(ArrayList<ImmutablePair<Integer, Integer>> traceRes,
+            CustomerCart customerCart) {
+        this.clrscr();
+        this.log("You bought:");
+        this.log(customerCart.selectedProductsInfo());
+
+        String change = "";
+        for (ImmutablePair<Integer, Integer> p : traceRes) {
+            change = change + IOHelperService.toVnd(p.getLeft()) + " vnd: " + p.getRight() + "\n";
+        }
+        if (change.length() > 0) {
+            this.log("\nYour change:");
+            this.log(change);
+        }
         this.log("\nPress enter key to continue");
         this.scanner.nextLine();
     }

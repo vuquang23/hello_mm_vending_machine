@@ -27,13 +27,13 @@ public class Store {
     private void initMock() {
         // cash in machine
         this.denominationList = new ArrayList<>(Arrays.asList(1, 2, 5, 10, 100, 200, 500));
-        this.denominationCount.put(1, 99);
-        this.denominationCount.put(2, 99);
-        this.denominationCount.put(5, 99);
-        this.denominationCount.put(10, 99);
-        this.denominationCount.put(100, 99);
-        this.denominationCount.put(200, 99);
-        this.denominationCount.put(500, 99);
+        this.denominationCount.put(1, 40);
+        this.denominationCount.put(2, 40);
+        this.denominationCount.put(5, 30);
+        this.denominationCount.put(10, 30);
+        this.denominationCount.put(50, 25);
+        this.denominationCount.put(100, 20);
+        this.denominationCount.put(200, 15);
 
         for (String product : ConstantsUtil.PRODUCTS) {
             this.productsCount.put(product, 99);
@@ -134,5 +134,20 @@ public class Store {
 
     public int getDenominationCount(int denomination) {
         return this.denominationCount.containsKey(denomination) ? this.denominationCount.get(denomination) : 0;
+    }
+
+    public ImmutablePair<int[], Integer> cashFlatten() {
+        int MAX = 1005;
+        int[] cash = new int[MAX];
+        int n = 0;
+
+        for (int d : this.denominationList) {
+            int currentAmount = this.getDenominationCount(d);
+            for (int i = 0; i < currentAmount; ++i) {
+                cash[++n] = d;
+            }
+        }
+        
+        return new ImmutablePair<>(cash, n);
     }
 }

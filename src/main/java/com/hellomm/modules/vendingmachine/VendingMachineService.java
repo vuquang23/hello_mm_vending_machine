@@ -1,17 +1,23 @@
 package com.hellomm.modules.vendingmachine;
 
 import com.hellomm.common.enums.StateEnum;
+import com.hellomm.common.exceptions.CannotPayBackException;
+import com.hellomm.common.exceptions.NotEnoughPaidException;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import com.hellomm.common.enums.CustomerActionEnum;
 import com.hellomm.modules.iohelper.IOHelperService;
 import com.hellomm.modules.statemachine.StateMachineService;
 import com.hellomm.modules.vendingmachine.components.CustomerCart;
 import com.hellomm.modules.vendingmachine.components.Store;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
 public class VendingMachineService {
     private IOHelperService ioHelperService;
-    private StateMachineService stateMachineService;
 
     private Store store;
     private CustomerCart customerCart;
@@ -20,7 +26,6 @@ public class VendingMachineService {
 
     public VendingMachineService(IOHelperService ioHelperService, StateMachineService stateMachineService) {
         this.ioHelperService = ioHelperService;
-        this.stateMachineService = stateMachineService;
 
         this.store = new Store();
 
@@ -105,7 +110,14 @@ public class VendingMachineService {
                 }
 
                 case TRANSACT: {
-
+                    ImmutablePair<Boolean, ArrayList<ImmutablePair<Integer, Integer>>> changeCalc = this
+                            .changeCalculate();
+                    if (!changeCalc.getLeft()) {
+                        throw new CannotPayBackException();
+                    }
+                    this.store.returnCashForCustomer(changeCalc.getRight());
+                    this.ioHelperService.returnCashAndProductsForCustomer(changeCalc.getRight(), this.customerCart);
+                    this.destroyCustomerCart();
                     break;
                 }
 
@@ -122,8 +134,9 @@ public class VendingMachineService {
 
             this.setState(nxtState);
         } catch (Exception e) {
+            this.ioHelperService.clrscr();
             this.ioHelperService.error(e);
-            Thread.sleep(2000);
+            Thread.sleep(2500);
         }
     }
 
@@ -141,5 +154,53 @@ public class VendingMachineService {
         this.customerCart = null;
     }
 
+    public ImmutablePair<Boolean, ArrayList<ImmutablePair<Integer, Integer>>> changeCalculate() throws Exception {
+        int change = this.customerCart.getChange();
+        if (change < 0) {
+            throw new NotEnoughPaidException();
+        }
 
+        // 1m vnd.
+        int MAX = 1005;
+
+        boolean[] dp = new boolean[MAX];
+        dp[0] = true;
+
+        int[] trace = new int[MAX];
+
+        ImmutablePair<int[], Integer> cashFlatten = this.store.cashFlatten();
+        int[] cash = cashFlatten.getLeft();
+        int n = cashFlatten.getRight();
+
+        for (int i = 1; i <= n; ++i) {
+            int val = cash[i];
+            for (int j = change; j >= 0; --j) {
+                if (j + val <= change && dp[j] == true) {
+                    dp[j + val] = true;
+                    trace[j + val] = val;
+                }
+            }
+        }
+
+        if (!dp[change]) {
+            return new ImmutablePair<>(false, null);
+        }
+
+        ArrayList<ImmutablePair<Integer, Integer>> traceRes = new ArrayList<>();
+        HashMap<Integer, Integer> changeDenominationCount = new HashMap<>();
+
+        while (change > 0) {
+            int val = trace[change];
+            int cnt = changeDenominationCount.containsKey(val) ? changeDenominationCount.get(val) : 0;
+            changeDenominationCount.put(val, cnt + 1);
+            change -= val;
+        }
+
+        for (int k : changeDenominationCount.keySet()) {
+            int cnt = changeDenominationCount.get(k);
+            traceRes.add(new ImmutablePair<>(k, cnt));
+        }
+
+        return new ImmutablePair<>(true, traceRes);
+    }
 }

@@ -3,6 +3,7 @@ package com.hellomm.modules.vendingmachine.components;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import com.hellomm.common.constants.ConstantsUtil;
 import com.hellomm.common.exceptions.CannotUnselectProductException;
 import com.hellomm.common.exceptions.ExceedProductAmountException;
 import com.hellomm.common.exceptions.InvalidProductException;
@@ -102,5 +103,20 @@ public class CustomerCart {
 
     public int getProductCount(String product) {
         return this.selectedProducts.containsKey(product) ? this.selectedProducts.get(product) : 0;
+    }
+
+    public int productsTotalPrice() {
+        int total = 0;
+        try {
+            for (String product : this.selectedProductList) {
+                int currentAmount = this.getProductCount(product);
+                total += currentAmount * ConstantsUtil.getPrice(product);
+            }
+        } catch (Exception e) {}
+        return total;
+    }
+
+    public int getChange() {
+        return this.totalBalance() - this.productsTotalPrice();
     }
 }
