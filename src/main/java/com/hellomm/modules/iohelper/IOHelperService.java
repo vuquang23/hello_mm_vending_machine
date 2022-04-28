@@ -92,9 +92,9 @@ public class IOHelperService {
                 case 3:
                     return new ImmutablePair<>(StateEnum.CUSTOMER_WAIT, CustomerActionEnum.UNSELECT_ITEM);
                 case 4:
-                    return new ImmutablePair<>(StateEnum.TRANSACTED, CustomerActionEnum.TRANSACT);
+                    return new ImmutablePair<>(StateEnum.READY, CustomerActionEnum.TRANSACT);
                 case 5:
-                    return new ImmutablePair<>(StateEnum.READY, null);
+                    return new ImmutablePair<>(StateEnum.READY, CustomerActionEnum.CANCEL);
                 default:
                     this.error("Invalid input. Try again!");
             }
@@ -134,11 +134,11 @@ public class IOHelperService {
                 continue;
             }
             int cashInt = Integer.parseInt(cash);
-            if (cashInt % 1000 != 0 || !Store.validDenomination(this.compress(cashInt))) {
+            if (cashInt % 1000 != 0 || !Store.validDenomination(IOHelperService.compress(cashInt))) {
                 this.error(new InvalidDenominationException());
                 continue;
             }
-            return this.compress(cashInt);
+            return IOHelperService.compress(cashInt);
         }
     }
 
@@ -162,16 +162,28 @@ public class IOHelperService {
     public void printCustomerCartInfo(CustomerCart customerCart) {
         this.clrscr();
         this.log("Your balance:");
-        this.log(this.toVnd(customerCart.totalBalance()) + " vnd.");
+        this.log(IOHelperService.toVnd(customerCart.totalBalance()) + " vnd.");
         this.log("Products in cart:");
         this.log(customerCart.selectedProductsInfo());
     }
 
-    public long toVnd(int balance) {
+    public static long toVnd(int balance) {
         return balance * 1000;
     }
 
-    public int compress(long balance) {
+    public static int compress(long balance) {
         return (int) balance / 1000;
+    }
+
+    public void customerCancelTx(CustomerCart customerCart) {
+        String insertCashHistoryInfo = customerCart.insertCashHistoryInfo();
+        if (insertCashHistoryInfo.length() == 0) {
+            return;
+        }
+        this.clrscr();
+        this.log("You receive back:");
+        this.log(insertCashHistoryInfo);
+        this.log("\nPress enter key to continue");
+        this.scanner.nextLine();
     }
 }

@@ -44,9 +44,7 @@ public class VendingMachineService {
                     case CUSTOMER_WAIT:
                         this.customerWait();
                         break;
-                    case TRANSACTED:
-                        // this.transacted();
-                        break;
+
                     default:
                         this.ioHelperService.error("Invalid machine state.");
                         System.exit(0);
@@ -77,7 +75,6 @@ public class VendingMachineService {
             switch (action) {
                 case INSERT_CASH: {
                     int denomination = this.ioHelperService.customerInsertCash();
-                    System.out.println("We get" + denomination);
                     if (denomination == -1) {
                         this.setState(StateEnum.CUSTOMER_WAIT);
                         return;
@@ -108,11 +105,13 @@ public class VendingMachineService {
                 }
 
                 case TRANSACT: {
-                    
+
                     break;
                 }
 
                 case CANCEL: {
+                    this.ioHelperService.customerCancelTx(customerCart);
+                    this.destroyCustomerCart();
                     break;
                 }
 
@@ -137,4 +136,10 @@ public class VendingMachineService {
     private void setState(StateEnum nxtState) {
         this.machineState = nxtState;
     }
+
+    private void destroyCustomerCart() {
+        this.customerCart = null;
+    }
+
+
 }

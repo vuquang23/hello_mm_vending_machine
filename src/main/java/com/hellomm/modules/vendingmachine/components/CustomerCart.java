@@ -6,6 +6,7 @@ import java.util.HashMap;
 import com.hellomm.common.exceptions.CannotUnselectProductException;
 import com.hellomm.common.exceptions.ExceedProductAmountException;
 import com.hellomm.common.exceptions.InvalidProductException;
+import com.hellomm.modules.iohelper.IOHelperService;
 
 public class CustomerCart {
     private HashMap<Integer, Integer> denominationCount;
@@ -82,6 +83,15 @@ public class CustomerCart {
         }
         if (ret.length() == 0) {
             ret = "Empty!\n";
+        }
+        return ret;
+    }
+
+    public String insertCashHistoryInfo() {
+        String ret = "";
+        for (int d : this.denominationList) {
+            int currentAmount = this.getDenominationCount(d);
+            ret = ret + IOHelperService.toVnd(d) + " vnd: " + currentAmount + "\n";
         }
         return ret;
     }

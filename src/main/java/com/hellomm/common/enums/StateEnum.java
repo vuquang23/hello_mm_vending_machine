@@ -4,5 +4,4 @@ public enum StateEnum {
     READY,
     ADMIN_WAIT,
     CUSTOMER_WAIT,
-    TRANSACTED
 }
