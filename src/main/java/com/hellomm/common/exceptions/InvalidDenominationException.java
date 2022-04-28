@@ -1,16 +1,16 @@
 package com.hellomm.common.exceptions;
 
-public class CannotPayBackException extends Exception {
+public class InvalidDenominationException extends Exception {
     private String message;
 
-    public CannotPayBackException(String message) {
+    public InvalidDenominationException(String message) {
         super();
         this.message = message;
     }
 
-    public CannotPayBackException() {
+    public InvalidDenominationException() {
         super();
-        this.message = "Cannot return cash for customer";
+        this.message = "Invalid denomination. Try again:";
     }
 
     @Override

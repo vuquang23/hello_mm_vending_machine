@@ -1,16 +1,16 @@
 package com.hellomm.common.exceptions;
 
-public class CannotPayBackException extends Exception {
+public class ExceedProductAmountException extends Exception {
     private String message;
 
-    public CannotPayBackException(String message) {
+    public ExceedProductAmountException(String message) {
         super();
         this.message = message;
     }
 
-    public CannotPayBackException() {
+    public ExceedProductAmountException() {
         super();
-        this.message = "Cannot return cash for customer";
+        this.message = "Exceed product amount.";
     }
 
     @Override
