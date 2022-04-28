@@ -108,7 +108,7 @@ public class VendingMachineService {
                 }
 
                 case TRANSACT: {
-
+                    
                     break;
                 }
 
@@ -123,8 +123,8 @@ public class VendingMachineService {
 
             this.setState(nxtState);
         } catch (Exception e) {
-            Thread.sleep(3000);
-            throw e;
+            this.ioHelperService.error(e);
+            Thread.sleep(2000);
         }
     }
 

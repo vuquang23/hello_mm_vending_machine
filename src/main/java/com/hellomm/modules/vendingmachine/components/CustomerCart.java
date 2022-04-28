@@ -3,6 +3,7 @@ package com.hellomm.modules.vendingmachine.components;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import com.hellomm.common.exceptions.CannotUnselectProductException;
 import com.hellomm.common.exceptions.ExceedProductAmountException;
 import com.hellomm.common.exceptions.InvalidProductException;
 
@@ -45,7 +46,7 @@ public class CustomerCart {
     public void unselectProduct(String product) throws Exception {
         int currentAmount = this.getProductCount(product);
         if (currentAmount == 0) {
-            throw new Exception("Number of this product in cart is 0.");
+            throw new CannotUnselectProductException();
         }
         currentAmount -= 1;
         this.selectedProducts.put(product, currentAmount);

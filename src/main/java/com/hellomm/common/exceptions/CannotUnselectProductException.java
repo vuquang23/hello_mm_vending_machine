@@ -1,16 +1,16 @@
 package com.hellomm.common.exceptions;
 
-public class InvalidProductException extends Exception {
+public class CannotUnselectProductException extends Exception {
     private String message;
 
-    public InvalidProductException(String message) {
+    public CannotUnselectProductException(String message) {
         super();
         this.message = message;
     }
 
-    public InvalidProductException() {
+    public CannotUnselectProductException() {
         super();
-        this.message = "Product name is invalid. Try again:";
+        this.message = "Number of this product in cart is 0.";
     }
 
     @Override
