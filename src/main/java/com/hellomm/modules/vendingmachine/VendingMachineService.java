@@ -5,8 +5,6 @@ import com.hellomm.common.exceptions.CannotPayBackException;
 import com.hellomm.common.exceptions.NotEnoughPaidException;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 
 import com.hellomm.common.enums.AdminActionEnum;
@@ -105,7 +103,11 @@ public class VendingMachineService {
     }
 
     private void adminAddCash() {
-
+        Pair<Integer, Integer> result = this.ioHelperService.adminAddCash();
+        if (result == null) {
+            return;
+        }
+        this.store.adminInsertCash(result.getLeft(), result.getRight());
     }
 
     private void adminViewItemInfo() {

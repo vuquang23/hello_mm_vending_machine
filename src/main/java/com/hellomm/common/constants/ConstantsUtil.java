@@ -17,6 +17,17 @@ public class ConstantsUtil {
                     IOHelperService.compress(100000),
                     IOHelperService.compress(200000)));
 
+    public static final ArrayList<Integer> ACCEPTED_DENOMINATIONS_FOR_ADMIN = new ArrayList<>(
+            Arrays.asList(
+                    IOHelperService.compress(1000),
+                    IOHelperService.compress(2000),
+                    IOHelperService.compress(5000),
+                    IOHelperService.compress(10000),
+                    IOHelperService.compress(20000),
+                    IOHelperService.compress(50000),
+                    IOHelperService.compress(100000),
+                    IOHelperService.compress(200000)));
+
     public static int getPrice(String product) throws Exception {
         switch (product) {
             case "COKE":

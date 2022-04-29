@@ -27,7 +27,7 @@ public class Store {
 
     private void initMock() {
         // cash in machine
-        this.denominationList = new ArrayList<>(Arrays.asList(1, 2, 5, 10, 100, 200, 500));
+        this.denominationList = new ArrayList<>(Arrays.asList(1, 2, 5, 10, 20, 50, 100, 200));
         this.denominationCount.put(1, 40);
         this.denominationCount.put(2, 40);
         this.denominationCount.put(5, 30);
@@ -39,7 +39,7 @@ public class Store {
         for (String product : ConstantsUtil.PRODUCTS) {
             this.productsCount.put(product, 99);
         }
-        
+
         // TODO: test exceed product amount
         // this.productsCount.put("SODA", 0);
     }
@@ -61,6 +61,15 @@ public class Store {
 
     public static boolean validDenomination(int denomination) {
         for (int value : ConstantsUtil.ACCEPTED_DENOMINATIONS) {
+            if (denomination == value) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean validDenominationForAdmin(int denomination) {
+        for (int value : ConstantsUtil.ACCEPTED_DENOMINATIONS_FOR_ADMIN) {
             if (denomination == value) {
                 return true;
             }
@@ -151,7 +160,7 @@ public class Store {
                 cash[++n] = d;
             }
         }
-        
+
         return new ImmutablePair<>(cash, n);
     }
 
@@ -163,7 +172,7 @@ public class Store {
             info = info + IOHelperService.toVnd(d) + " vnd: " + amount + "\n";
             total += amount * d;
         }
-        info = info + "Total: " + IOHelperService.toVnd(total) + " vnd"; 
+        info = info + "Total: " + IOHelperService.toVnd(total) + " vnd";
         return info;
     }
 }

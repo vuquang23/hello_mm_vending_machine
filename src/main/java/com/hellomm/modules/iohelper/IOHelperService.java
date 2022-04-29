@@ -254,4 +254,42 @@ public class IOHelperService {
         this.log("\nPress enter key to continue");
         this.scanner.nextLine();
     }
+
+    public Pair<Integer, Integer> adminAddCash() {
+        this.clrscr();
+        this.log("Insert cash: (x to go back).");
+        int cashDenomination, cashAmount;
+        for (;;) {
+            String cash = this.scanner.nextLine();
+            if (cash.equals("x")) {
+                return null;
+            }
+            if (!StringUtils.isNumeric(cash)) {
+                this.error(new InvalidDenominationException());
+                continue;
+            }
+            cashDenomination = Integer.parseInt(cash);
+            if (cashDenomination % 1000 != 0
+                    || !Store.validDenominationForAdmin(IOHelperService.compress(cashDenomination))) {
+                this.error(new InvalidDenominationException());
+                continue;
+            }
+            cashDenomination = IOHelperService.compress(cashDenomination);
+            break;
+        }
+        this.log("Amount: (x to go back).");
+        for (;;) {
+            String amount = this.scanner.nextLine();
+            if (amount.equals("x")) {
+                return null;
+            }
+            if (!StringUtils.isNumeric(amount)) {
+                this.error("Invalid amount of denomination.");
+                continue;
+            }
+            cashAmount = Integer.parseInt(amount);
+            break;
+        }
+        return new ImmutablePair<Integer, Integer>(cashDenomination, cashAmount);
+    }
 }
