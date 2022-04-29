@@ -46,7 +46,6 @@ public class VendingMachineService {
                     case CUSTOMER_WAIT:
                         this.customerWait();
                         break;
-
                     default:
                         this.ioHelperService.error("Invalid machine state.");
                         System.exit(0);
@@ -234,7 +233,7 @@ public class VendingMachineService {
         int[] cash = cashFlatten.getLeft();
         int n = cashFlatten.getRight();
 
-        for (int i = n; i >= 1; --i) {
+        for (int i = 1; i <= n; ++i) {
             int val = cash[i];
             for (int j = change; j >= 0; --j) {
                 if (j + val <= change && dp[j] && trace[j + val] < val) {
