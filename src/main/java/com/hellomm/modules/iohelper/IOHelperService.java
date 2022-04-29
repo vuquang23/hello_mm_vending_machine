@@ -258,7 +258,7 @@ public class IOHelperService {
     public Pair<Integer, Integer> adminAddCash() {
         this.clrscr();
         this.log("Insert cash: (x to go back).");
-        int cashDenomination, cashAmount;
+        int cashDenomination;
         for (;;) {
             String cash = this.scanner.nextLine();
             if (cash.equals("x")) {
@@ -277,18 +277,9 @@ public class IOHelperService {
             cashDenomination = IOHelperService.compress(cashDenomination);
             break;
         }
-        this.log("Amount: (x to go back).");
-        for (;;) {
-            String amount = this.scanner.nextLine();
-            if (amount.equals("x")) {
-                return null;
-            }
-            if (!StringUtils.isNumeric(amount)) {
-                this.error("Invalid amount of denomination.");
-                continue;
-            }
-            cashAmount = Integer.parseInt(amount);
-            break;
+        int cashAmount = this.getInputAmount();
+        if (cashAmount == -1) {
+            return null;
         }
         return new ImmutablePair<Integer, Integer>(cashDenomination, cashAmount);
     }
@@ -300,5 +291,26 @@ public class IOHelperService {
         this.log(info);
         this.log("\nPress enter key to continue");
         this.scanner.nextLine();
+    }
+
+    public Pair<String, Integer> adminAddItem() {
+        String product = this.customerSelectProduct();
+        int amount = this.getInputAmount();
+        return new ImmutablePair<>(product, amount);
+    }
+
+    private int getInputAmount() {
+        this.log("Amount: (x to go back).");
+        for (;;) {
+            String amount = this.scanner.nextLine();
+            if (amount.equals("x")) {
+                return -1;
+            }
+            if (!StringUtils.isNumeric(amount)) {
+                this.error("Invalid amount of denomination.");
+                continue;
+            }
+            return Integer.parseInt(amount);
+        }
     }
 }

@@ -114,12 +114,13 @@ public class VendingMachineService {
         this.ioHelperService.adminViewItemInfo(store);
     }
 
-    private void adminAddItem() {
-
+    private void adminAddItem() throws Exception {
+        Pair<String, Integer> result = this.ioHelperService.adminAddItem();
+        this.store.adminAddProduct(result.getLeft(), result.getRight());
     }
 
     private void adminCancel() {
-
+        // Do nothing.
     }
 
     private void customerWait() throws Exception {
