@@ -200,12 +200,18 @@ public class IOHelperService {
         this.log(customerCart.selectedProductsInfo());
 
         String change = "";
+        int totalChange = 0;
         for (ImmutablePair<Integer, Integer> p : traceRes) {
-            change = change + IOHelperService.toVnd(p.getLeft()) + " vnd: " + p.getRight() + "\n";
+            int denomination = p.getLeft();
+            int amount = p.getRight();
+            change = change + IOHelperService.toVnd(denomination) + " vnd: " + amount + "\n";
+            totalChange += denomination * amount;
         }
         if (change.length() > 0) {
             this.log("\nYour change:");
             this.log(change);
+            this.log("Total:");
+            this.log(IOHelperService.toVnd(totalChange) + " vnd");
         }
         this.log("\nPress enter key to continue");
         this.scanner.nextLine();

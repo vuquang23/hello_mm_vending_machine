@@ -38,6 +38,9 @@ public class Store {
         for (String product : ConstantsUtil.PRODUCTS) {
             this.productsCount.put(product, 99);
         }
+        
+        // TODO: test exceed product amount
+        // this.productsCount.put("SODA", 0);
     }
 
     public void adminInsertCash(int denomination, int amount) {

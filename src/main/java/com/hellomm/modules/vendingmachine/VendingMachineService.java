@@ -5,6 +5,8 @@ import com.hellomm.common.exceptions.CannotPayBackException;
 import com.hellomm.common.exceptions.NotEnoughPaidException;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 
 import com.hellomm.common.enums.CustomerActionEnum;
@@ -173,10 +175,10 @@ public class VendingMachineService {
         int[] cash = cashFlatten.getLeft();
         int n = cashFlatten.getRight();
 
-        for (int i = 1; i <= n; ++i) {
+        for (int i = n; i >= 1; --i) {
             int val = cash[i];
             for (int j = change; j >= 0; --j) {
-                if (j + val <= change && dp[j] == true) {
+                if (j + val <= change && dp[j] && trace[j + val] < val) {
                     dp[j + val] = true;
                     trace[j + val] = val;
                 }
