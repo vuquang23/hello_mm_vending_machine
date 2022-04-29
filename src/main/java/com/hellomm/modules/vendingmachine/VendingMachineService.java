@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 
+import com.hellomm.common.enums.AdminActionEnum;
 import com.hellomm.common.enums.CustomerActionEnum;
 import com.hellomm.modules.iohelper.IOHelperService;
 import com.hellomm.modules.vendingmachine.components.CustomerCart;
@@ -42,8 +43,7 @@ public class VendingMachineService {
                         this.ready();
                         break;
                     case ADMIN_WAIT:
-                        // this.ioHelperService.adminWaitStateOptions();
-
+                        this.adminWait();
                         break;
                     case CUSTOMER_WAIT:
                         this.customerWait();
@@ -63,6 +63,61 @@ public class VendingMachineService {
         this.ioHelperService.readyStateOptions();
         StateEnum nxtState = this.ioHelperService.readyStateSelect();
         this.setState(nxtState);
+    }
+
+    private void adminWait() throws Exception {
+        this.ioHelperService.adminWaitStateOptions();
+
+        Pair<StateEnum, AdminActionEnum> result = this.ioHelperService.adminWaitStateSelect();
+        StateEnum nxtState = result.getLeft();
+        AdminActionEnum action = result.getRight();
+
+        try {
+            switch (action) {
+                case VIEW_CASH_INFO:
+                    this.adminViewCashInfo();
+                    break;
+                case ADD_CASH:
+                    this.adminAddCash();
+                    break;
+                case VIEW_ITEM_INFO:
+                    this.adminViewItemInfo();
+                    break;
+                case ADD_ITEM:
+                    this.adminAddItem();
+                    break;
+                case CANCEL:
+                    this.adminCancel();
+                    break;
+                default:
+                    throw new Error("Invalid action.");
+            }
+            this.setState(nxtState);
+        } catch (Exception e) {
+            this.ioHelperService.clrscr();
+            this.ioHelperService.error(e);
+            Thread.sleep(2500);
+        }
+    }
+
+    private void adminViewCashInfo() {
+        this.ioHelperService.adminViewCashInfo(store);
+    }
+
+    private void adminAddCash() {
+
+    }
+
+    private void adminViewItemInfo() {
+
+    }
+
+    private void adminAddItem() {
+
+    }
+
+    private void adminCancel() {
+
     }
 
     private void customerWait() throws Exception {

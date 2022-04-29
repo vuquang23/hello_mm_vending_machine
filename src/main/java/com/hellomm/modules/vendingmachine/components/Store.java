@@ -8,6 +8,7 @@ import com.hellomm.common.constants.ConstantsUtil;
 import com.hellomm.common.exceptions.CannotPayBackException;
 import com.hellomm.common.exceptions.InvalidDenominationException;
 import com.hellomm.common.exceptions.InvalidProductException;
+import com.hellomm.modules.iohelper.IOHelperService;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
 
@@ -152,5 +153,17 @@ public class Store {
         }
         
         return new ImmutablePair<>(cash, n);
+    }
+
+    public String viewCashInfo() {
+        String info = "";
+        int total = 0;
+        for (int d : this.denominationList) {
+            int amount = this.getDenominationCount(d);
+            info = info + IOHelperService.toVnd(d) + " vnd: " + amount + "\n";
+            total += amount * d;
+        }
+        info = info + "Total: " + IOHelperService.toVnd(total) + " vnd"; 
+        return info;
     }
 }

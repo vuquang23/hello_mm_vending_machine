@@ -6,6 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
+import com.hellomm.common.enums.AdminActionEnum;
 import com.hellomm.common.enums.CustomerActionEnum;
 import com.hellomm.common.enums.StateEnum;
 import com.hellomm.common.exceptions.InvalidDenominationException;
@@ -101,6 +102,34 @@ public class IOHelperService {
                     return new ImmutablePair<>(StateEnum.READY, CustomerActionEnum.TRANSACT);
                 case 5:
                     return new ImmutablePair<>(StateEnum.READY, CustomerActionEnum.CANCEL);
+                default:
+                    this.error("Invalid input. Try again!");
+            }
+        }
+    }
+
+    public Pair<StateEnum, AdminActionEnum> adminWaitStateSelect() {
+        this.log("\nPlease select:");
+
+        for (;;) {
+            String optionSelected = this.scanner.nextLine();
+            if (!StringUtils.isNumeric(optionSelected)) {
+                this.error("Invalid input. Try again!");
+                continue;
+            }
+            int optionSelectedNum = Integer.parseInt(optionSelected);
+
+            switch (optionSelectedNum) {
+                case 1:
+                    return new ImmutablePair<>(StateEnum.ADMIN_WAIT, AdminActionEnum.VIEW_CASH_INFO);
+                case 2:
+                    return new ImmutablePair<>(StateEnum.ADMIN_WAIT, AdminActionEnum.ADD_CASH);
+                case 3:
+                    return new ImmutablePair<>(StateEnum.ADMIN_WAIT, AdminActionEnum.VIEW_ITEM_INFO);
+                case 4:
+                    return new ImmutablePair<>(StateEnum.ADMIN_WAIT, AdminActionEnum.ADD_ITEM);
+                case 5:
+                    return new ImmutablePair<>(StateEnum.READY, AdminActionEnum.CANCEL);
                 default:
                     this.error("Invalid input. Try again!");
             }
@@ -213,6 +242,15 @@ public class IOHelperService {
             this.log("Total:");
             this.log(IOHelperService.toVnd(totalChange) + " vnd");
         }
+        this.log("\nPress enter key to continue");
+        this.scanner.nextLine();
+    }
+
+    public void adminViewCashInfo(Store store) {
+        this.clrscr();
+        String info = store.viewCashInfo();
+        this.log("Cash in machine:");
+        this.log(info);
         this.log("\nPress enter key to continue");
         this.scanner.nextLine();
     }
