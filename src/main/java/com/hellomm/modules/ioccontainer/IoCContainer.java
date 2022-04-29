@@ -12,6 +12,10 @@ public class IoCContainer {
         vendingMachineService = new VendingMachineService(ioHelperService);
     }
 
+    /**
+     * Get vending machine service
+     * @return VendingMachineService
+     */
     public VendingMachineService getVendingMachineService() {
         return vendingMachineService;
     }

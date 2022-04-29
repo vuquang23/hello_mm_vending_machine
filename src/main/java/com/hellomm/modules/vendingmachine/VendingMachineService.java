@@ -32,6 +32,9 @@ public class VendingMachineService {
         this.setState(StateEnum.READY);
     }
 
+    /**
+     * Start vending machine
+     */
     public void start() {
         ioHelperService.clrscr();
         for (;;) {
@@ -56,12 +59,19 @@ public class VendingMachineService {
         }
     }
 
+    /**
+     * Action when in ready state
+     */
     private void ready() {
         this.ioHelperService.readyStateOptions();
         StateEnum nxtState = this.ioHelperService.readyStateSelect();
         this.setState(nxtState);
     }
 
+    /**
+     * Action when in admin_wait state
+     * @throws Exception
+     */
     private void adminWait() throws Exception {
         this.ioHelperService.adminWaitStateOptions();
 
@@ -97,10 +107,16 @@ public class VendingMachineService {
         }
     }
 
+    /**
+     * Admin view cash info
+     */
     private void adminViewCashInfo() {
         this.ioHelperService.adminViewCashInfo(store);
     }
 
+    /**
+     * Admin add cash
+     */
     private void adminAddCash() {
         Pair<Integer, Integer> result = this.ioHelperService.adminAddCash();
         if (result == null) {
@@ -109,19 +125,33 @@ public class VendingMachineService {
         this.store.adminInsertCash(result.getLeft(), result.getRight());
     }
 
+    /**
+     * Admin view item info
+     */
     private void adminViewItemInfo() {
         this.ioHelperService.adminViewItemInfo(store);
     }
 
+    /**
+     * Admin add item
+     * @throws Exception
+     */
     private void adminAddItem() throws Exception {
         Pair<String, Integer> result = this.ioHelperService.adminAddItem();
         this.store.adminAddProduct(result.getLeft(), result.getRight());
     }
 
+    /**
+     * Admin cancel
+     */
     private void adminCancel() {
         // Do nothing.
     }
 
+    /**
+     * Action when in customer_wait state
+     * @throws Exception
+     */
     private void customerWait() throws Exception {
         this.createCartIfNewTransaction();
 
@@ -161,6 +191,10 @@ public class VendingMachineService {
         }
     }
 
+    /**
+     * Customer insert cash
+     * @throws Exception
+     */
     private void customerInsertCash() throws Exception {
         int denomination = this.ioHelperService.customerInsertCash();
         if (denomination == -1) {
@@ -170,6 +204,10 @@ public class VendingMachineService {
         this.customerCart.insertCash(denomination);
     }
 
+    /**
+     * Customer select item
+     * @throws Exception
+     */
     private void customerSelectItem() throws Exception {
         String product = this.ioHelperService.customerSelectProduct();
         if (product.equals("-1")) {
@@ -178,6 +216,10 @@ public class VendingMachineService {
         this.customerCart.selectProduct(this.store, product);
     }
 
+    /**
+     * Customer unselect item
+     * @throws Exception
+     */
     private void customerUnselectItem() throws Exception {
         String product = this.ioHelperService.customerSelectProduct();
         if (product.equals("-1")) {
@@ -186,6 +228,10 @@ public class VendingMachineService {
         this.customerCart.unselectProduct(product);
     }
 
+    /**
+     * Customer make tx
+     * @throws Exception
+     */
     private void customerMakeTx() throws Exception {
         ImmutablePair<Boolean, ArrayList<ImmutablePair<Integer, Integer>>> changeCalc = this
                 .changeCalculate();
@@ -198,25 +244,43 @@ public class VendingMachineService {
         this.destroyCustomerCart();
     }
 
+    /**
+     * Customer cancel tx
+     */
     private void customerCancelTx() {
         this.ioHelperService.customerCancelTx(customerCart);
         this.destroyCustomerCart();
     }
 
+    /**
+     * Create customer cart if new tx
+     */
     private void createCartIfNewTransaction() {
         if (this.customerCart == null) {
             this.customerCart = new CustomerCart();
         }
     }
 
+    /**
+     * Set state for machine
+     * @param nxtState
+     */
     private void setState(StateEnum nxtState) {
         this.machineState = nxtState;
     }
 
+    /**
+     * Destroy customer cart
+     */
     private void destroyCustomerCart() {
         this.customerCart = null;
     }
 
+    /**
+     * Calc how to pay change
+     * @return Pair Boolean and ArrayList
+     * @throws Exception
+     */
     public ImmutablePair<Boolean, ArrayList<ImmutablePair<Integer, Integer>>> changeCalculate() throws Exception {
         int change = this.customerCart.getChange();
         if (change < 0) {

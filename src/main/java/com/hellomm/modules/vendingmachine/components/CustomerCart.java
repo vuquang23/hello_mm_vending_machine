@@ -23,6 +23,10 @@ public class CustomerCart {
         this.selectedProductList = new ArrayList<>();
     }
 
+    /**
+     * Customer insert cash
+     * @param denomination int
+     */
     public void insertCash(int denomination) {
         int currentAmount = this.getDenominationCount(denomination);
         if (currentAmount == 0) {
@@ -31,6 +35,12 @@ public class CustomerCart {
         this.denominationCount.put(denomination, currentAmount + 1);
     }
 
+    /**
+     * Customer select product
+     * @param store Store
+     * @param product String
+     * @throws Exception
+     */
     public void selectProduct(Store store, String product) throws Exception {
         if (!Store.validProduct(product)) {
             throw new InvalidProductException();
@@ -45,6 +55,11 @@ public class CustomerCart {
         this.selectedProducts.put(product, currentAmount + 1);
     }
 
+    /**
+     * Customer unselect product
+     * @param product String
+     * @throws Exception
+     */
     public void unselectProduct(String product) throws Exception {
         int currentAmount = this.getProductCount(product);
         if (currentAmount == 0) {
@@ -57,6 +72,10 @@ public class CustomerCart {
         }
     }
 
+    /**
+     * Delete product from selected product list
+     * @param product String
+     */
     private void deleteProductFromSelectedProductList(String product) {
         for (int i = 0; i < this.selectedProductList.size(); ++i) {
             String value = this.selectedProductList.get(i);
@@ -67,6 +86,10 @@ public class CustomerCart {
         }
     }
 
+    /**
+     * Get total balance of customer
+     * @return int
+     */
     public int totalBalance() {
         int total = 0;
         for (int d : this.denominationList) {
@@ -76,6 +99,10 @@ public class CustomerCart {
         return total;
     }
 
+    /**
+     * Get selected products info
+     * @return String
+     */
     public String selectedProductsInfo() {
         String ret = "";
         for (String product : this.selectedProductList) {
@@ -88,6 +115,10 @@ public class CustomerCart {
         return ret;
     }
 
+    /**
+     * Get insert cash history info
+     * @return
+     */
     public String insertCashHistoryInfo() {
         String ret = "";
         for (int d : this.denominationList) {
@@ -97,14 +128,28 @@ public class CustomerCart {
         return ret;
     }
 
+    /**
+     * Get number of a denomination
+     * @param denomination int
+     * @return int
+     */
     public int getDenominationCount(int denomination) {
         return this.denominationCount.containsKey(denomination) ? this.denominationCount.get(denomination) : 0;
     }
 
+    /**
+     * Get number of a product
+     * @param product String
+     * @return int
+     */
     public int getProductCount(String product) {
         return this.selectedProducts.containsKey(product) ? this.selectedProducts.get(product) : 0;
     }
 
+    /**
+     * Get price that customer need to pay
+     * @return int
+     */
     public int productsTotalPrice() {
         int total = 0;
         try {
@@ -117,10 +162,18 @@ public class CustomerCart {
         return total;
     }
 
+    /**
+     * Get change
+     * @return int
+     */
     public int getChange() {
         return this.totalBalance() - this.productsTotalPrice();
     }
 
+    /**
+     * Get clone of selected product list
+     * @return ArrayList
+     */
     public ArrayList<String> getSelectedProductList() {
         return (ArrayList<String>) this.selectedProductList.clone();
     }

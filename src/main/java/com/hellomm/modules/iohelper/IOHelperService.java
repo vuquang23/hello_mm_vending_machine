@@ -29,23 +29,41 @@ public class IOHelperService {
         this.scanner = new Scanner(System.in);
     }
 
+    /**
+     * Log
+     * @param message T
+     */
     public <T> void log(T message) {
         System.out.println(GREEN + message + RESET);
     }
 
+    /**
+     * Log Error 
+     * @param message T
+     */
     public <T> void error(T message) {
         System.out.println(RED + message + RESET);
     }
 
+    /**
+     * Log Error
+     * @param e Exception
+     */
     public void error(Exception e) {
         System.out.println(RED + e.getMessage() + RESET);
     }
 
+    /**
+     * Clear screen
+     */
     public void clrscr() {
         System.out.print("\033[H\033[2J");
         System.out.flush();
     }
 
+    /**
+     * Print options when in ready state
+     */
     public void readyStateOptions() {
         this.clrscr();
         this.log("Options:");
@@ -54,6 +72,10 @@ public class IOHelperService {
         this.log("3. Stop Machine");
     }
 
+    /**
+     * Select options when in ready state
+     * @return
+     */
     public StateEnum readyStateSelect() {
         this.log("\nPlease select:");
 
@@ -80,6 +102,10 @@ public class IOHelperService {
         }
     }
 
+    /**
+     * Select options when in customer_wait state
+     * @return
+     */
     public Pair<StateEnum, CustomerActionEnum> customerWaitStateSelect() {
         this.log("\nPlease select:");
 
@@ -108,6 +134,10 @@ public class IOHelperService {
         }
     }
 
+    /**
+     * Select options when in admin_wait state
+     * @return Pair
+     */
     public Pair<StateEnum, AdminActionEnum> adminWaitStateSelect() {
         this.log("\nPlease select:");
 
@@ -136,6 +166,9 @@ public class IOHelperService {
         }
     }
 
+    /**
+     * Print options when in admin_wait state
+     */
     public void adminWaitStateOptions() {
         this.clrscr();
         this.log("Options:");
@@ -146,6 +179,9 @@ public class IOHelperService {
         this.log("5. Cancel");
     }
 
+    /**
+     * Print options when in customer_wait state
+     */
     public void customerWaitStateOptions() {
         this.log("Options:");
         this.log("1. Insert cash");
@@ -155,6 +191,10 @@ public class IOHelperService {
         this.log("5. Cancel");
     }
 
+    /**
+     * Get input of action "customer insert cash"
+     * @return int
+     */
     public int customerInsertCash() {
         this.clrscr();
         this.log("Insert a cash: (x to go back).");
@@ -177,6 +217,10 @@ public class IOHelperService {
         }
     }
 
+    /**
+     * Get input of action "customer select product"
+     * @return
+     */
     public String customerSelectProduct() {
         this.clrscr();
         this.log("Choose a product: (x to go back).");
@@ -194,6 +238,10 @@ public class IOHelperService {
         }
     }
 
+    /**
+     * Print customer cart info
+     * @param customerCart CustomerCart
+     */
     public void printCustomerCartInfo(CustomerCart customerCart) {
         this.clrscr();
         this.log("Your balance:");
@@ -202,14 +250,28 @@ public class IOHelperService {
         this.log(customerCart.selectedProductsInfo());
     }
 
+    /**
+     * From compress form to vnd form
+     * @param balance
+     * @return
+     */
     public static long toVnd(int balance) {
         return balance * 1000;
     }
 
+    /**
+     * From vnd form to compress form
+     * @param balance
+     * @return
+     */
     public static int compress(long balance) {
         return (int) balance / 1000;
     }
 
+    /**
+     * Print receipt when customer cancel tx
+     * @param customerCart
+     */
     public void customerCancelTx(CustomerCart customerCart) {
         String insertCashHistoryInfo = customerCart.insertCashHistoryInfo();
         if (insertCashHistoryInfo.length() == 0) {
@@ -222,6 +284,11 @@ public class IOHelperService {
         this.scanner.nextLine();
     }
 
+    /**
+     * Print receipt when customer make tx successfully
+     * @param traceRes ArrayList of Pair
+     * @param customerCart CustomerCart
+     */
     public void returnCashAndProductsForCustomer(ArrayList<ImmutablePair<Integer, Integer>> traceRes,
             CustomerCart customerCart) {
         this.clrscr();
@@ -246,6 +313,10 @@ public class IOHelperService {
         this.scanner.nextLine();
     }
 
+    /**
+     * Print cash info in machine for admin
+     * @param store
+     */
     public void adminViewCashInfo(Store store) {
         this.clrscr();
         String info = store.viewCashInfo();
@@ -255,6 +326,10 @@ public class IOHelperService {
         this.scanner.nextLine();
     }
 
+    /**
+     * Get input of action "admin add cash"
+     * @return
+     */
     public Pair<Integer, Integer> adminAddCash() {
         this.clrscr();
         this.log("Insert cash: (x to go back).");
@@ -284,6 +359,10 @@ public class IOHelperService {
         return new ImmutablePair<Integer, Integer>(cashDenomination, cashAmount);
     }
 
+    /**
+     * Print item info for admin
+     * @param store
+     */
     public void adminViewItemInfo(Store store) {
         this.clrscr();
         String info = store.viewItemInfo();
@@ -293,12 +372,20 @@ public class IOHelperService {
         this.scanner.nextLine();
     }
 
+    /**
+     * Get input of action "admin add item"
+     * @return
+     */
     public Pair<String, Integer> adminAddItem() {
         String product = this.customerSelectProduct();
         int amount = this.getInputAmount();
         return new ImmutablePair<>(product, amount);
     }
 
+    /**
+     * Get amount of product or denomination
+     * @return int
+     */
     private int getInputAmount() {
         this.log("Amount: (x to go back).");
         for (;;) {
