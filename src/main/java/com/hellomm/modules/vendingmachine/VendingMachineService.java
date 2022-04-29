@@ -138,6 +138,9 @@ public class VendingMachineService {
      */
     private void adminAddItem() throws Exception {
         Pair<String, Integer> result = this.ioHelperService.adminAddItem();
+        if (result == null) {
+            return;
+        }
         this.store.adminAddProduct(result.getLeft(), result.getRight());
     }
 

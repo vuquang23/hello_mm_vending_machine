@@ -378,7 +378,13 @@ public class IOHelperService {
      */
     public Pair<String, Integer> adminAddItem() {
         String product = this.customerSelectProduct();
+        if (product.equals("-1")) {
+            return null;
+        }
         int amount = this.getInputAmount();
+        if (amount == -1) {
+            return null;
+        }
         return new ImmutablePair<>(product, amount);
     }
 
