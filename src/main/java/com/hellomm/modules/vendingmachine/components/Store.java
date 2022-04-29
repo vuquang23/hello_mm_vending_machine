@@ -175,4 +175,16 @@ public class Store {
         info = info + "Total: " + IOHelperService.toVnd(total) + " vnd";
         return info;
     }
+
+    public String viewItemInfo() {
+        String info = "";
+        int total = 0;
+        for (String product : this.productsCount.keySet()) {
+            int amount = this.getProductCount(product);
+            info = info + product + ": " + amount + "\n";
+            total += amount;
+        }
+        info = info + "Total: " + total;
+        return info;
+    }
 }

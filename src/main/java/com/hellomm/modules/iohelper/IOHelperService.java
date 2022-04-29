@@ -292,4 +292,13 @@ public class IOHelperService {
         }
         return new ImmutablePair<Integer, Integer>(cashDenomination, cashAmount);
     }
+
+    public void adminViewItemInfo(Store store) {
+        this.clrscr();
+        String info = store.viewItemInfo();
+        this.log("Products in machine:");
+        this.log(info);
+        this.log("\nPress enter key to continue");
+        this.scanner.nextLine();
+    }
 }

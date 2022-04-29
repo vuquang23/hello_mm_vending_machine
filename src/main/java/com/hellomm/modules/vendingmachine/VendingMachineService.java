@@ -111,7 +111,7 @@ public class VendingMachineService {
     }
 
     private void adminViewItemInfo() {
-
+        this.ioHelperService.adminViewItemInfo(store);
     }
 
     private void adminAddItem() {
