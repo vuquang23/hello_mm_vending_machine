@@ -194,6 +194,7 @@ public class VendingMachineService {
             throw new CannotPayBackException();
         }
         this.store.returnCashForCustomer(changeCalc.getRight());
+        this.store.returnProductsForCustomer(customerCart);
         this.ioHelperService.returnCashAndProductsForCustomer(changeCalc.getRight(), this.customerCart);
         this.destroyCustomerCart();
     }

@@ -46,9 +46,6 @@ public class Store {
 
     public void adminInsertCash(int denomination, int amount) {
         int currentAmount = this.getDenominationCount(denomination);
-        if (currentAmount == 0) {
-            this.denominationList.add(denomination);
-        }
         this.denominationCount.put(denomination, currentAmount + amount);
     }
 
@@ -95,23 +92,8 @@ public class Store {
             if (currentAmount < needToDecrease) {
                 throw new CannotPayBackException();
             }
-
             currentAmount -= needToDecrease;
             this.denominationCount.put(denomination, currentAmount);
-
-            if (currentAmount == 0) {
-                this.deleteFromDenominationList(denomination);
-            }
-        }
-    }
-
-    private void deleteFromDenominationList(int denomination) {
-        for (int i = 0; i < this.denominationList.size(); ++i) {
-            int d = this.denominationList.get(i);
-            if (d == denomination) {
-                this.denominationList.remove(i);
-                break;
-            }
         }
     }
 
@@ -127,6 +109,15 @@ public class Store {
         for (ImmutablePair<String, Integer> p : selectedProducts) {
             String product = p.getLeft();
             int amount = p.getRight();
+            int currentAmount = this.getProductCount(product);
+            this.productsCount.put(product, currentAmount - amount);
+        }
+    }
+
+    public void returnProductsForCustomer(CustomerCart customerCart) {
+        ArrayList<String> selectedProductList = customerCart.getSelectedProductList();
+        for (String product : selectedProductList) {
+            int amount = customerCart.getProductCount(product);
             int currentAmount = this.getProductCount(product);
             this.productsCount.put(product, currentAmount - amount);
         }

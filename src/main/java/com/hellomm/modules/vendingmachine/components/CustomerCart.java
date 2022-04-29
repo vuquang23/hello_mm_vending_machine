@@ -112,11 +112,16 @@ public class CustomerCart {
                 int currentAmount = this.getProductCount(product);
                 total += currentAmount * ConstantsUtil.getPrice(product);
             }
-        } catch (Exception e) {}
+        } catch (Exception e) {
+        }
         return total;
     }
 
     public int getChange() {
         return this.totalBalance() - this.productsTotalPrice();
+    }
+
+    public ArrayList<String> getSelectedProductList() {
+        return (ArrayList<String>) this.selectedProductList.clone();
     }
 }
