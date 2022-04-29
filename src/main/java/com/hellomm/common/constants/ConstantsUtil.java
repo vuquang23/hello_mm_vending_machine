@@ -10,12 +10,17 @@ public class ConstantsUtil {
     public static final ArrayList<String> PRODUCTS = new ArrayList<>(Arrays.asList("COKE", "PEPSI", "SODA"));
 
     public static final ArrayList<Integer> ACCEPTED_DENOMINATIONS = new ArrayList<>(
-            Arrays.asList(10, 20, 50, 100, 200));
+            Arrays.asList(
+                    IOHelperService.compress(10000),
+                    IOHelperService.compress(20000),
+                    IOHelperService.compress(50000),
+                    IOHelperService.compress(100000),
+                    IOHelperService.compress(200000)));
 
     public static int getPrice(String product) throws Exception {
         switch (product) {
             case "COKE":
-                return IOHelperService.compress(10000); 
+                return IOHelperService.compress(10000);
             case "PEPSI":
                 return IOHelperService.compress(10000);
             case "SODA":
